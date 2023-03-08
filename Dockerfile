@@ -1,13 +1,11 @@
-FROM python:3.9-alpine3.16
+FROM python:3.9
 
-COPY requirements.txt /temp/requirements.txt
-COPY service /service
 WORKDIR /service
-EXPOSE 8000
 
-RUN apk add postgresql-client build-base postgresql-dev
+COPY requirements.txt /service/
+COPY . /service/
 
-RUN pip install -r /temp/requirements.txt
+RUN pip install -r /service/requirements.txt
 
 RUN adduser --disabled-password service-user
 
