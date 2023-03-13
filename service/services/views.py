@@ -1,3 +1,17 @@
+from django.db.models import Prefetch
 from django.shortcuts import render
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
-# Create your views here.
+from clients.models import Client
+from services.models import Subscription
+from services.serializer import SubscriptionSerializer
+
+
+class SubscriptionView(ReadOnlyModelViewSet):
+    queryset = Subscription.objects.select_related('plan').prefetch_related(
+        Prefetch(
+            'client', queryset=Client.objects.select_related('user').only('company_name', 'user__email')
+        )
+    )
+    serializer_class = SubscriptionSerializer
+
